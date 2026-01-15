@@ -75,12 +75,24 @@ function App() {
     }
   };
 
-  // 5. Cancel Meeting Logic
-  const handleCancel = (id) => {
+  // 5. Cancel Meeting Logic (With Simple Admin Guard)
+const handleCancel = (id) => {
+  // Requirement check: The assignment assumes a default user is logged in 
+  const password = prompt("Enter Admin Password to cancel:");
+  
+  if (password === "admin123") { 
     if (window.confirm("Are you sure you want to cancel this meeting?")) {
-      axios.delete(`${API_BASE}/meetings/${id}`).then(() => fetchMeetings());
+      axios.delete(`${API_BASE}/meetings/${id}`)
+        .then(() => {
+          alert("Meeting cancelled successfully.");
+          fetchMeetings(); // Refresh the list [cite: 34]
+        })
+        .catch(err => alert("Error cancelling meeting"));
     }
-  };
+  } else {
+    alert("Unauthorized! Only the admin can cancel meetings.");
+  }
+};
 
   return (
     <div style={styles.container}>
