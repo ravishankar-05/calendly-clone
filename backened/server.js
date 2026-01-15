@@ -57,15 +57,41 @@ app.get('/api/slots', async (req, res) => {
 
 // 3. Create Booking
 app.post('/api/book', async (req, res) => {
+    // 1. Get data from the request
     const { eventTypeId, name, email, startTime } = req.body;
-    const endTime = new Date(new Date(startTime).getTime() + 30*60000); 
+
     try {
+        // 2. Ask Database: "How long is this event?"
+        const eventResult = await pool.query(
+            "SELECT duration FROM event_types WHERE id = $1", 
+            [eventTypeId]
+        );
+
+        // Safety Check: If event doesn't exist, stop.
+        if (eventResult.rows.length === 0) {
+            return res.status(400).json({ error: "Invalid Event Type" });
+        }
+
+        // 3. Get the duration (e.g., 15)
+        const duration = eventResult.rows[0].duration;
+
+        // 4. Calculate End Time (Start + Duration)
+        const start = new Date(startTime);
+        const end = new Date(start.getTime() + duration * 60000);
+
+        // 5. Save the Booking to Database
         await pool.query(
             "INSERT INTO bookings (event_type_id, invitee_name, invitee_email, start_time, end_time) VALUES ($1, $2, $3, $4, $5)",
-            [eventTypeId, name, email, startTime, endTime]
+            [eventTypeId, name, email, start, end]
         );
+
+        // 6. Send success message back to frontend
         res.json({ success: true });
-    } catch (err) { console.error(err); res.status(500).send("Database Error"); }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Database Error");
+    }
 });
 
 app.listen(5000, () => console.log("Server running on port 5000"));
