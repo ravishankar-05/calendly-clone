@@ -5,26 +5,81 @@ import 'react-calendar/dist/Calendar.css';
 
 // --- STYLES (Calendly-inspired) ---
 const styles = {
-  container: { fontFamily: 'sans-serif', maxWidth: '1000px', margin: '40px auto', padding: '20px' },
-  nav: { display: 'flex', gap: '20px', marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '10px' },
-  navButton: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', color: '#666' },
-  activeNav: { color: '#0069ff', borderBottom: '2px solid #0069ff' },
-  flexContainer: { display: 'flex', gap: '30px' },
-  leftPanel: { flex: 1, borderRight: '1px solid #ddd', paddingRight: '20px' },
-  rightPanel: { flex: 2 },
-  title: { fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px' },
+  container: { 
+    fontFamily: "'Inter', -apple-system, sans-serif", 
+    backgroundColor: '#f8f9fa', 
+    minHeight: '100vh', 
+    padding: '40px 20px',
+    color: '#1a1a1a'
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.05)',
+    maxWidth: '1060px',
+    margin: '0 auto',
+    overflow: 'hidden',
+    border: '1px solid #e2e8f0'
+  },
+  nav: { 
+    display: 'flex', 
+    borderBottom: '1px solid #edf2f7',
+    backgroundColor: '#ffffff'
+  },
+  navButton: { 
+    flex: 1, 
+    padding: '18px', 
+    background: 'none', 
+    border: 'none', 
+    cursor: 'pointer', 
+    fontSize: '0.95rem', 
+    fontWeight: '600', 
+    color: '#718096',
+    transition: 'all 0.2s'
+  },
+  activeNav: { 
+    color: '#0069ff', 
+    borderBottom: '3px solid #0069ff',
+    backgroundColor: '#fafdff'
+  },
+  mainContent: { padding: '40px' },
+  flexContainer: { display: 'flex', gap: '40px' },
+  leftPanel: { flex: '0 0 320px', borderRight: '1px solid #edf2f7', paddingRight: '20px' },
+  rightPanel: { flex: 1 },
+  title: { fontSize: '1.25rem', fontWeight: '700', marginBottom: '24px', color: '#1a202c' },
   eventButton: {
-    display: 'block', width: '100%', padding: '15px', marginBottom: '10px',
-    border: '1px solid #ddd', borderRadius: '8px', background: 'white',
-    cursor: 'pointer', textAlign: 'left', fontSize: '1rem'
+    width: '100%',
+    padding: '18px',
+    marginBottom: '12px',
+    border: '1px solid #e2e8f0',
+    borderRadius: '8px',
+    background: 'white',
+    cursor: 'pointer',
+    textAlign: 'left',
+    transition: 'all 0.2s ease'
   },
-  activeButton: { border: '2px solid #0069ff', background: '#f6faff' },
+  activeEvent: { borderColor: '#0069ff', backgroundColor: '#f0f7ff', boxShadow: '0 0 0 1px #0069ff' },
+  slotGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '12px' },
   slotButton: {
-    display: 'block', width: '100%', padding: '12px', marginBottom: '8px',
-    border: '1px solid #0069ff', color: '#0069ff', background: 'white',
-    borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'
+    padding: '12px',
+    border: '1px solid #0069ff',
+    borderRadius: '4px',
+    color: '#0069ff',
+    backgroundColor: 'white',
+    fontWeight: '700',
+    cursor: 'pointer',
+    textAlign: 'center'
   },
-  meetingCard: { border: '1px solid #ddd', padding: '15px', borderRadius: '8px', marginBottom: '10px' }
+  meetingCard: { 
+    padding: '20px', 
+    border: '1px solid #e2e8f0', 
+    borderRadius: '8px', 
+    marginBottom: '16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff'
+  }
 };
 
 function App() {
@@ -94,9 +149,9 @@ const handleCancel = (id) => {
   }
 };
 
-  return (
-    <div style={styles.container}>
-      {/* NAVIGATION TABS */}
+return (
+  <div style={styles.container}>
+    <div style={styles.card}>
       <nav style={styles.nav}>
         <button 
           style={{...styles.navButton, ...(view === 'booking' ? styles.activeNav : {})}} 
@@ -106,50 +161,71 @@ const handleCancel = (id) => {
           onClick={() => setView('meetings')}>Meetings Management</button>
       </nav>
 
-      {view === 'booking' ? (
-        <div style={styles.flexContainer}>
-          <div style={styles.leftPanel}>
-            <div style={styles.title}>Select Event Type</div>
-            {events.map(ev => (
-              <button key={ev.id} 
-                style={{...styles.eventButton, ...(selectedEvent?.id === ev.id ? styles.activeButton : {})}}
-                onClick={() => { setSelectedEvent(ev); setSlots([]); }}>
-                <strong>{ev.name}</strong><br/>
-                <small>{ev.duration} min</small>
-              </button>
+      <div style={styles.mainContent}>
+        {view === 'booking' ? (
+          <div style={styles.flexContainer}>
+            <div style={styles.leftPanel}>
+              <div style={styles.title}>What event should we book?</div>
+              {events.map(ev => (
+                <button key={ev.id} 
+                  style={{...styles.eventButton, ...(selectedEvent?.id === ev.id ? styles.activeEvent : {})}}
+                  onClick={() => { setSelectedEvent(ev); setSlots([]); }}>
+                  <div style={{color: '#0069ff', fontWeight: 'bold', marginBottom: '4px'}}>{ev.name}</div>
+                  <div style={{color: '#718096', fontSize: '0.85rem'}}>🕒 {ev.duration} min duration</div>
+                </button>
+              ))}
+            </div>
+
+            <div style={styles.rightPanel}>
+              {!selectedEvent ? (
+                <div style={{textAlign:'center', color:'#a0aec0', marginTop: '40px'}}>
+                  <p>Please select an event type on the left to see availability.</p>
+                </div>
+              ) : (
+                <div>
+                  <div style={styles.title}>Select a Date & Time</div>
+                  <div style={{display:'flex', gap:'30px', flexWrap: 'wrap'}}>
+                    <Calendar onChange={onDateChange} value={date} minDate={new Date()} tileDisabled={isWeekend} />
+                    <div style={{flex: 1}}>
+                      <div style={{marginBottom: '15px', fontWeight: '600'}}>Available slots:</div>
+                      <div style={styles.slotGrid}>
+                        {slots.map((s, i) => (
+                          <button key={i} style={styles.slotButton} onClick={() => handleBook(s)}>
+                            {new Date(s).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{maxWidth: '800px', margin: '0 auto'}}>
+            <div style={styles.title}>Upcoming & Past Meetings</div>
+            {meetings.length === 0 ? <p>No meetings found.</p> : meetings.map(m => (
+              <div key={m.id} style={styles.meetingCard}>
+                <div>
+                  <div style={{fontWeight: '700', color: '#2d3748'}}>{m.event_name}</div>
+                  <div style={{fontSize: '0.9rem', color: '#718096'}}>
+                    👤 {m.invitee_name} ({m.invitee_email})<br/>
+                    📅 {new Date(m.start_time).toLocaleString()}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleCancel(m.id)} 
+                  style={{padding: '8px 16px', borderRadius: '4px', border: '1px solid #fc8181', color: '#e53e3e', background: 'none', cursor: 'pointer', fontWeight: 'bold'}}>
+                  Cancel
+                </button>
+              </div>
             ))}
           </div>
-
-          <div style={styles.rightPanel}>
-            {!selectedEvent ? <p>Select an event to see availability.</p> : (
-              <div style={{display:'flex', gap:'20px'}}>
-                <Calendar onChange={onDateChange} value={date} minDate={new Date()} tileDisabled={isWeekend} />
-                <div style={{width:'200px'}}>
-                  <strong>Available Times</strong>
-                  {slots.map((s, i) => (
-                    <button key={i} style={styles.slotButton} onClick={() => handleBook(s)}>
-                      {new Date(s).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div style={styles.title}>Upcoming & Past Meetings</div>
-          {meetings.map(m => (
-            <div key={m.id} style={styles.meetingCard}>
-              <strong>{m.event_name}</strong> with {m.invitee_name} ({m.invitee_email})<br/>
-              📅 {new Date(m.start_time).toLocaleString()}
-              <button onClick={() => handleCancel(m.id)} style={{float:'right', color:'red', cursor:'pointer'}}>Cancel</button>
-            </div>
-          ))}
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default App;
