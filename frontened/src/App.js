@@ -21,27 +21,28 @@ const styles = {
     overflow: 'hidden',
     border: '1px solid #e2e8f0'
   },
-  nav: { 
-    display: 'flex', 
-    borderBottom: '1px solid #edf2f7',
-    backgroundColor: '#ffffff'
-  },
-  navButton: { 
-    flex: 1, 
-    padding: '18px', 
-    background: 'none', 
-    border: 'none', 
-    cursor: 'pointer', 
-    fontSize: '0.95rem', 
-    fontWeight: '600', 
-    color: '#718096',
-    transition: 'all 0.2s'
-  },
-  activeNav: { 
-    color: '#0069ff', 
-    borderBottom: '3px solid #0069ff',
-    backgroundColor: '#fafdff'
-  },
+nav: { 
+  display: 'flex', 
+  justifyContent: 'center', 
+  gap: '40px', 
+  padding: '20px 0',
+  backgroundColor: '#fff',
+  borderBottom: '1px solid #e2e8f0'
+},
+navButton: { 
+  background: 'none', 
+  border: 'none', 
+  cursor: 'pointer', 
+  fontSize: '0.95rem', 
+  color: '#64748b',
+  fontWeight: '500',
+  padding: '8px 4px',
+  transition: '0.2s'
+},
+activeNav: { 
+  color: '#0069ff', 
+  borderBottom: '2px solid #0069ff' 
+},
   mainContent: { padding: '40px' },
   flexContainer: { display: 'flex', gap: '40px' },
   leftPanel: { flex: '0 0 320px', borderRight: '1px solid #edf2f7', paddingRight: '20px' },
