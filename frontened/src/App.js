@@ -32,7 +32,7 @@ function App() {
 
   // 1. Load Event Types
   useEffect(() => {
-    axios.get('http://localhost:5000/api/events')
+    axios.get('https://calendly-clone-edou.onrender.com/api/events')
       .then(res => setEvents(res.data))
       .catch(err => console.error("Backend not running!"));
   }, []);
@@ -42,7 +42,7 @@ function App() {
     setDate(newDate);
     if(selectedEvent) {
         const dateStr = newDate.toLocaleDateString('en-CA'); 
-        axios.get(`http://localhost:5000/api/slots?date=${dateStr}&eventTypeId=${selectedEvent.id}`)
+        axios.get(`https://calendly-clone-edou.onrender.com/api/slots?date=${dateStr}&eventTypeId=${selectedEvent.id}`)
              .then(res => setSlots(res.data));
     }
   };
@@ -52,7 +52,7 @@ function App() {
       const name = prompt("Enter your Name:");
       const email = prompt("Enter your Email:");
       if(name && email) {
-        axios.post('http://localhost:5000/api/book', {
+        axios.post('https://calendly-clone-edou.onrender.com/api/book', {
             eventTypeId: selectedEvent.id, name, email, startTime: slotTime
         }).then(() => {
             alert("✅ Booking Confirmed!");
